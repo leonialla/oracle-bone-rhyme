@@ -13,4 +13,8 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '',
   },
+
+  vue: {
+    defineModel: true,
+  },
 })
