@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const imageInput = ref<File | null>()
-
 export type ImageType = 'literature' | 'rubbing'
+
+const imageInput = ref<File | null>()
 const imageType = ref<ImageType>()
 </script>
 
