@@ -16,7 +16,7 @@ function softmax(input: number[]) {
   return exps.map(exp => exp / expSum)
 }
 
-const session = await InferenceSession.create('models/recognition-literature.onnx')
+const session = await InferenceSession.create('public/models/recognition-literature.onnx')
 
 export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)
