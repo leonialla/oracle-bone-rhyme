@@ -12,6 +12,11 @@
     "lint:fix": "eslint . --fix",
     "up": "taze major -I"
   },
+  "dependencies": {
+    "decimal.js": "^10.4.3",
+    "onnxruntime-node": "^1.17.0",
+    "sharp": "^0.33.2"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^2.6.3",
     "@iconify-json/carbon": "^1.1.28",
@@ -27,7 +32,7 @@
     "focus-trap": "^7.5.4",
     "nuxt": "^3.10.0",
     "postcss": "^8.4.33",
-    "taze": "^0.13.1",
+    "taze": "^0.13.2",
     "vue": "^3.4.15",
     "vue-advanced-cropper": "^2.8.8",
     "vue-router": "^4.2.5"

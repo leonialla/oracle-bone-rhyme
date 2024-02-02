@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Menu } from 'floating-vue'
+import { Dropdown } from 'floating-vue'
 import type { DropdownMenuOption } from '~/types/dropdown'
 
 const { options } = defineProps<{
@@ -10,8 +10,9 @@ const selectedOption = ref(options[0])
 </script>
 
 <template>
-  <Menu
+  <Dropdown
     :distance="8"
+    aria-id="dropdown-menu"
     bg="hover:active"
     border="~ base" rounded
     flex="~" justify="center"
@@ -37,5 +38,5 @@ const selectedOption = ref(options[0])
         </li>
       </ul>
     </template>
-  </Menu>
+  </Dropdown>
 </template>

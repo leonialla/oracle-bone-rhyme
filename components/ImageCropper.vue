@@ -4,9 +4,9 @@ import { Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
 
 export interface Props {
-  /** Crop frame aspect ratio (width/height), default 1/1 */
+  // Crop frame aspect ratio (width/height), default 1/1.
   stencilAspectRatio?: number
-  /** The ratio of the longest edge of the cut box to the length of the cut screen, default 0.9, not more than 1 */
+  // The ratio of the longest edge of the cut box to the length of the cut screen, default 0.9, not more than 1.
   stencilSizePercentage?: number
 }
 
@@ -16,28 +16,17 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (event: 'submit'): void
+  (event: 'submit', file: File): void
 }>()
 
 const file = defineModel<File | null>()
-
 const cropperDialog = ref(false)
-
 const cropper = ref<InstanceType<typeof Cropper>>()
-
 const cropperFlag = ref(false)
-
 const cropperImage = reactive({
   src: '',
   type: 'image/jpg',
 })
-
-function stencilSize({ boundaries }: { boundaries: Boundaries }) {
-  return {
-    width: boundaries.width * props.stencilSizePercentage,
-    height: boundaries.height * props.stencilSizePercentage,
-  }
-}
 
 watch(file, (file, _, onCleanup) => {
   let expired = false
@@ -57,6 +46,13 @@ watch(file, (file, _, onCleanup) => {
   cropperFlag.value = false
 })
 
+function stencilSize({ boundaries }: { boundaries: Boundaries }) {
+  return {
+    width: boundaries.width * props.stencilSizePercentage,
+    height: boundaries.height * props.stencilSizePercentage,
+  }
+}
+
 function cropImage() {
   if (cropper.value && file.value) {
     cropperFlag.value = true
@@ -64,7 +60,7 @@ function cropImage() {
     const { canvas } = cropper.value.getResult()
     canvas?.toBlob((blob) => {
       file.value = new File([blob as any], `cropped${file.value?.name}` as string, { type: blob?.type })
-      emit('submit')
+      emit('submit', file.value)
     }, cropperImage.type)
   }
 }
@@ -72,7 +68,7 @@ function cropImage() {
 function submitOriginal() {
   if (cropper.value && file.value) {
     cropperDialog.value = false
-    emit('submit')
+    emit('submit', file.value)
   }
 }
 </script>

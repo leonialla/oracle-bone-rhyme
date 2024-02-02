@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { DropdownMenuOption } from '~/types/dropdown'
-
 const inputImage = ref<File | null>()
+const recognition = ref<RecognitionResult>()
+const loading = ref<boolean>(false)
 
 const searchOptions = ref<DropdownMenuOption[]>([
   {
@@ -21,6 +21,18 @@ const searchOptions = ref<DropdownMenuOption[]>([
     label: '出版社',
   },
 ])
+
+async function onSubmitImage(file: File) {
+  const formData = new FormData()
+  formData.append('image', file)
+
+  loading.value = true
+  recognition.value = await $fetch('/api/recognition', {
+    method: 'POST',
+    body: formData,
+  })
+  loading.value = false
+}
 </script>
 
 <template>
@@ -33,34 +45,56 @@ const searchOptions = ref<DropdownMenuOption[]>([
         </div>
       </div>
     </section>
+
     <br>
 
     <section flex="~ col" gap="4" border="~ base" rounded p="4">
       <div flex="~" justify="center" items="center" gap="6">
         <ImageUploader v-model="inputImage" w="50" h="50" />
-        <ImageCropper v-model="inputImage" />
-        <CharacterBox character="韵" w="50" h="50" />
+        <ImageCropper v-model="inputImage" @submit="onSubmitImage" />
+        <CharacterBox
+          :character="recognition?.classId && recognition.conf! > 0.4 ? recognition!.simplified : ''"
+          w="50" h="50"
+        />
       </div>
+
       <div
+        v-if="loading"
         bg="green-5/10" border="~ green-5" text="green-5"
         p="2" rounded
         flex="~" justify="start" items="center" gap="2"
       >
-        <div i-carbon-checkmark-outline text="2xl" />
+        <div i-svg-spinners-180-ring text="2xl" />
         <div text="sm">
-          类别：60000，置信概率：88.88 %，《字形总表》编码：8888
+          识别中...
         </div>
       </div>
-      <!-- <div
-        bg="red-5/10" border="~ red-5" text="red-5"
-        p="2" rounded
-        flex="~" justify="start" items="center" gap="2"
+      <div
+        v-if="recognition?.classId"
       >
-        <div i-carbon-ai-status-failed text="2xl" />
-        <div text="sm">
-          识别失败
+        <div
+          v-if="recognition.conf! > 0.4"
+          bg="green-5/10" border="~ green-5" text="green-5"
+          p="2" rounded
+          flex="~" justify="start" items="center" gap="2"
+        >
+          <div i-carbon-checkmark-outline text="2xl" />
+          <div text="sm">
+            类别：{{ recognition.classId }}，置信概率：{{ recognition.conf ? (recognition.conf! * 100).toFixed(2) : '' }}，《新编甲骨文字形总表》编码：{{ recognition.code }}
+          </div>
         </div>
-      </div> -->
+        <div
+          v-else
+          bg="red-5/10" border="~ red-5" text="red-5"
+          p="2" rounded
+          flex="~" justify="start" items="center" gap="2"
+        >
+          <div i-carbon-ai-status-failed text="2xl" />
+          <div text="sm">
+            识别失败
+          </div>
+        </div>
+      </div>
       <div
         border="~ base"
         p="2" rounded
@@ -68,7 +102,7 @@ const searchOptions = ref<DropdownMenuOption[]>([
       >
         <div i-carbon-idea text="2xl orange-4" />
         <div text="sm" op="45 hover:75 transition">
-          点击 "上传图像" 或将图像拖动至该区域开始识别。
+          点击 "上传图像" 以开始进行识别。
         </div>
       </div>
     </section>
@@ -107,7 +141,7 @@ const searchOptions = ref<DropdownMenuOption[]>([
         </div>
       </div>
       <div>
-        <ul flex="~ col" gap="2">
+        <!-- <ul flex="~ col" gap="2">
           <li
             v-for="i in 10" :key="i"
             border="~ base" p="2" rounded bg="hover:active"
@@ -130,7 +164,7 @@ const searchOptions = ref<DropdownMenuOption[]>([
               </div>
             </NuxtLink>
           </li>
-        </ul>
+        </ul> -->
       </div>
     </section>
   </div>

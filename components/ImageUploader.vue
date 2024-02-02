@@ -3,11 +3,8 @@ import { fileOpen } from 'browser-fs-access'
 import type { FileWithHandle } from 'browser-fs-access'
 
 const props = withDefaults(defineProps<{
-  /** The image src before change */
   original?: string
-  /** Allowed file types */
   allowedFileTypes?: string[]
-  /** Allowed file size */
   allowedFileSize?: number
   imgClass?: string
 }>(), {
@@ -16,38 +13,36 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  (event: 'pick', value: FileWithHandle): void
   (event: 'error', code: number, message: string): void
 }>()
 
 const file = defineModel<FileWithHandle | null>()
-
 const defaultImage = computed(() => props.original || '')
-/** Preview of selected images */
 const previewImage = ref('')
-/** The current images on display */
 const imageSrc = computed<string>(() => previewImage.value || defaultImage.value)
 
 async function pickImage() {
-  const image = await fileOpen({
-    description: 'Image',
-    mimeTypes: props.allowedFileTypes,
-  })
+  try {
+    const image = await fileOpen({
+      description: 'Image',
+      mimeTypes: props.allowedFileTypes,
+    })
 
-  if (!image)
-    return
+    if (!image)
+      return
 
-  if (!props.allowedFileTypes.includes(image.type)) {
-    emit('error', 1, '不支持的文件格式')
-    return
+    if (!props.allowedFileTypes.includes(image.type)) {
+      emit('error', 1, '不支持的文件格式')
+      return
+    }
+    else if (image.size > props.allowedFileSize) {
+      emit('error', 2, `图像大小上限为 ${props.allowedFileSize} Bytes`)
+      return
+    }
+
+    file.value = image
   }
-  else if (image.size > props.allowedFileSize) {
-    emit('error', 2, `图像大小上限为 ${props.allowedFileSize} Bytes`)
-    return
-  }
-
-  file.value = image
-  emit('pick', file.value)
+  catch (error) {}
 }
 
 watch(file, (image, _, onCleanup) => {

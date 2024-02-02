@@ -14,7 +14,22 @@ export default defineNuxtConfig({
     classSuffix: '',
   },
 
-  vue: {
-    defineModel: true,
+  nitro: {
+    esbuild: {
+      options: {
+        target: 'esnext',
+      },
+    },
+    imports: {
+      dirs: [
+        'types',
+      ],
+    },
+  },
+
+  imports: {
+    dirs: [
+      'types',
+    ],
   },
 })
