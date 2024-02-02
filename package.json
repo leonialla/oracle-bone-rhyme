@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "lint": "esint .",
     "lint:fix": "eslint . --fix",
-    "up": "taze major -I"
+    "up": "taze major -I",
+    "migrate": "prisma migrate dev"
   },
   "dependencies": {
     "onnxruntime-node": "^1.17.0",
