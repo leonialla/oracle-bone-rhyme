@@ -44,14 +44,14 @@ export default defineEventHandler(async (event) => {
     const output = Array.from((await session.run({ input })).output.data) as number[]
     const probabilities = softmax(output)
 
-    const conf = Math.max(...probabilities)
-    const classId = classnames[probabilities.indexOf(conf)]
+    const confidence = Math.max(...probabilities)
+    const classId = classnames[probabilities.indexOf(confidence)]
 
     const glyph = glyphs.find(it => it.classId === classId)
 
     return {
       classId,
-      conf,
+      confidence,
       code: glyph?.code,
       simplified: glyph?.simplified,
     } as RecognitionResult

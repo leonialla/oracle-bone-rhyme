@@ -1,6 +1,6 @@
 export type RecognitionResult = Partial<{
   classId: string
-  conf: number
+  confidence: number
   simplified: string
   code: string
 }>

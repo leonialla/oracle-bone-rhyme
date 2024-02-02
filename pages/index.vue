@@ -53,7 +53,7 @@ async function onSubmitImage(file: File) {
         <ImageUploader v-model="inputImage" w="50" h="50" />
         <ImageCropper v-model="inputImage" @submit="onSubmitImage" />
         <CharacterBox
-          :character="recognition?.classId && recognition.conf! > 0.4 ? recognition!.simplified : ''"
+          :character="recognition?.classId && recognition.confidence! > 0.4 ? recognition!.simplified : ''"
           w="50" h="50"
         />
       </div>
@@ -73,14 +73,14 @@ async function onSubmitImage(file: File) {
         v-if="recognition?.classId"
       >
         <div
-          v-if="recognition.conf! > 0.4"
+          v-if="recognition.confidence! > 0.4"
           bg="green-5/10" border="~ green-5" text="green-5"
           p="2" rounded
           flex="~" justify="start" items="center" gap="2"
         >
           <div i-carbon-checkmark-outline text="2xl" />
           <div text="sm">
-            类别：{{ recognition.classId }}，置信概率：{{ recognition.conf ? (recognition.conf! * 100).toFixed(2) : '' }}，《新编甲骨文字形总表》编码：{{ recognition.code }}
+            类别：{{ recognition.classId }}，置信概率：{{ recognition.confidence ? (recognition.confidence! * 100).toFixed(2) : '' }}，《新编甲骨文字形总表》编码：{{ recognition.code }}
           </div>
         </div>
         <div
@@ -140,8 +140,8 @@ async function onSubmitImage(file: File) {
           </div>
         </div>
       </div>
-      <div>
-        <!-- <ul flex="~ col" gap="2">
+      <!-- <div>
+        <ul flex="~ col" gap="2">
           <li
             v-for="i in 10" :key="i"
             border="~ base" p="2" rounded bg="hover:active"
@@ -164,8 +164,8 @@ async function onSubmitImage(file: File) {
               </div>
             </NuxtLink>
           </li>
-        </ul> -->
-      </div>
+        </ul>
+      </div> -->
     </section>
   </div>
 </template>
