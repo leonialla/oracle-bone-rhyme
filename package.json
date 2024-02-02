@@ -13,7 +13,6 @@
     "up": "taze major -I"
   },
   "dependencies": {
-    "decimal.js": "^10.4.3",
     "onnxruntime-node": "^1.17.0",
     "sharp": "^0.33.2"
   },
