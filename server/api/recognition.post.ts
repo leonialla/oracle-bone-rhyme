@@ -1,7 +1,7 @@
 // @ts-expect-error esm export
 import { InferenceSession, Tensor } from 'onnxruntime-node'
 import sharp from 'sharp'
-import { classnames } from './classnames.json'
+import { classnames } from './literature-classnames.json'
 import glyphs from './glyphs.json'
 
 function normalize(input: number, mean: number, std: number) {
