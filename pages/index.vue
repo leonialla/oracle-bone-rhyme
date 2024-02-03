@@ -199,7 +199,8 @@ async function search() {
           >
             <NuxtLink to="/" flex="~" justify="start" gap="4">
               <div flex="~" gap="2">
-                {{ literature.literature.title }}  <div v-if="literature.literature.isbn">
+                {{ literature.literature.title }}
+                <div v-if="literature.literature.isbn">
                   (ISBN：{{ literature.literature.isbn }})
                 </div>
               </div>
