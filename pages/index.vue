@@ -29,6 +29,7 @@ const searchOptions = ref<DropdownMenuOption[]>([
     label: '出版社',
   },
 ])
+
 const selectedOption = ref<DropdownMenuOption>(searchOptions.value[0])
 
 async function fetchAssociatedLiteratures() {
@@ -79,6 +80,11 @@ async function search() {
   associatedLiteratures.value = fetchedLiteratures.value.filter((literature) => {
     return literature.literature[creteria.type]?.includes(creteria.keyword)
   })
+}
+
+function reset() {
+  associatedLiteratures.value = fetchedLiteratures.value
+  searchKeyword.value = ''
 }
 </script>
 
@@ -182,7 +188,7 @@ async function search() {
             <button border="~ base" bg="base hover:active" p="1" rounded text="active:green-5" @click="search">
               <div i-carbon-search />
             </button>
-            <button border="~ base" bg="base hover:active" p="1" rounded text="active:red-5" @click="associatedLiteratures = fetchedLiteratures">
+            <button border="~ base" bg="base hover:active" p="1" rounded text="active:red-5" @click="reset">
               <div i-carbon-reset />
             </button>
           </div>
