@@ -28,8 +28,8 @@ async function fetchAssociatedLiteratures() {
 
   const associations = await $fetch('/api/literatures', { query: { classId: recognition.value.classId } })
 
-  associatedLiteratures.value = associations.flatMap(association =>
-    association.pages.map(page => ({ literature: association.literature, page })),
+  associatedLiteratures.value = associations.flatMap(
+    association => association.pages.map(page => ({ literature: association.literature, page })),
   )
 
   fetchedLiteratures.value = associatedLiteratures.value
@@ -136,7 +136,7 @@ function reset() {
       >
         <div i-carbon-idea text="2xl orange-4" />
         <div text="sm" op="45 hover:75 transition">
-          点击 "上传图像" 以开始进行识别。
+          点击 "上传图像" 区域以开始进行识别。
         </div>
       </div>
     </section>
@@ -178,7 +178,7 @@ function reset() {
       <div>
         <ul flex="~ col" gap="2">
           <li
-            v-for="literature in associatedLiteratures" :key="literature.literature.title"
+            v-for="{ literature, page } in associatedLiteratures" :key="literature.title"
             border="~ base" p="2" rounded bg="hover:active"
             text="sm"
             op="75 hover:100"
@@ -186,19 +186,19 @@ function reset() {
           >
             <NuxtLink to="/" flex="~" justify="start" gap="4">
               <div flex="~" gap="2">
-                {{ literature.literature.title }}
-                <div v-if="literature.literature.isbn">
-                  (ISBN：{{ literature.literature.isbn }})
+                {{ literature.title }}
+                <div v-if="literature.isbn">
+                  (ISBN：{{ literature.isbn }})
                 </div>
               </div>
-              <div v-if="literature.literature.author">
-                作者：{{ literature.literature.author }}
+              <div v-if="literature.author">
+                作者：{{ literature.author }}
               </div>
-              <div v-if="literature.literature.publishingHouse">
-                出版社：{{ literature.literature.publishingHouse }}
+              <div v-if="literature.publishingHouse">
+                出版社：{{ literature.publishingHouse }}
               </div>
               <div>
-                第 {{ literature.page }} 页
+                第 {{ page }} 页
               </div>
             </NuxtLink>
           </li>
