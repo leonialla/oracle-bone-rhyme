@@ -25,3 +25,5 @@ logs
 
 # ONNX models
 *.onnx
+
+prisma/seed.ts

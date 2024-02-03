@@ -9,3 +9,26 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Literature {
+  id               Int                    @id @default(autoincrement())
+  title            String
+  author           String?
+  isbn             String?
+  organization     String?
+  publishingHouse  String?
+  description      String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  pageAssociations GlyphPageAssociation[]
+}
+
+model GlyphPageAssociation {
+  id           Int        @id @default(autoincrement())
+  classId      String
+  literature   Literature @relation(fields: [literatureId], references: [id])
+  literatureId Int
+  page         Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}

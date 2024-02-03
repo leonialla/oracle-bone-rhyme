@@ -1,11 +1,19 @@
 <script setup lang="ts">
+interface AssociatedLiterature {
+  literature: Literature
+  page: number
+}
+
 const inputImage = ref<File | null>()
 const recognition = ref<RecognitionResult>()
+const searchKeyword = ref<string>()
+const associatedLiteratures = ref<Array<AssociatedLiterature>>([])
+const fetchedLiteratures = ref<Array<AssociatedLiterature>>([])
 const loading = ref<boolean>(false)
 
 const searchOptions = ref<DropdownMenuOption[]>([
   {
-    name: 'literatureName',
+    name: 'title',
     label: '文献名称',
   },
   {
@@ -21,8 +29,34 @@ const searchOptions = ref<DropdownMenuOption[]>([
     label: '出版社',
   },
 ])
+const selectedOption = ref<DropdownMenuOption>(searchOptions.value[0])
+
+async function fetchAssociatedLiteratures() {
+  if (!recognition.value?.classId)
+    return
+
+  const associations = await $fetch('/api/literatures', {
+    query: {
+      classId: recognition.value.classId,
+    },
+  })
+
+  for (const association of associations) {
+    for (const page of association.pages) {
+      associatedLiteratures.value.push({
+        literature: association.literature,
+        page,
+      })
+    }
+  }
+
+  fetchedLiteratures.value = associatedLiteratures.value
+}
 
 async function onSubmitImage(file: File) {
+  recognition.value = undefined
+  associatedLiteratures.value = []
+
   const formData = new FormData()
   formData.append('image', file)
 
@@ -32,6 +66,19 @@ async function onSubmitImage(file: File) {
     body: formData,
   })
   loading.value = false
+
+  await fetchAssociatedLiteratures()
+}
+
+async function search() {
+  const creteria = {
+    type: selectedOption.value.name,
+    keyword: searchKeyword.value,
+  } as LiteratureQueryCreteria
+
+  associatedLiteratures.value = fetchedLiteratures.value.filter((literature) => {
+    return literature.literature[creteria.type]?.includes(creteria.keyword)
+  })
 }
 </script>
 
@@ -123,27 +170,28 @@ async function onSubmitImage(file: File) {
     <section border="~ base" rounded p="4" flex="~ col" gap="5">
       <div>
         <div grid="~ cols-[1fr_14fr_1fr]" gap="2">
-          <DropdownMenu :options="searchOptions" />
+          <DropdownMenu v-model="selectedOption" :options="searchOptions" />
           <input
-            type="text" placeholder="在此处键入关键词以进行检索"
-            text="placeholder:sm"
-            border="~ base focus:lighter" p="2" outline="none" rounded
+            v-model="searchKeyword" type="text"
+            placeholder="在此处键入关键词以进行检索"
+            text="placeholder:sm" border="~ base focus:lighter" p="2" outline="none"
+            rounded
             bg="transparent"
           >
           <div flex="~" justify="start" items="center" gap="2" text="3xl">
-            <button border="~ base" bg="base hover:active" p="1" rounded text="active:green-5">
+            <button border="~ base" bg="base hover:active" p="1" rounded text="active:green-5" @click="search">
               <div i-carbon-search />
             </button>
-            <button border="~ base" bg="base hover:active" p="1" rounded text="active:red-5">
+            <button border="~ base" bg="base hover:active" p="1" rounded text="active:red-5" @click="associatedLiteratures = fetchedLiteratures">
               <div i-carbon-reset />
             </button>
           </div>
         </div>
       </div>
-      <!-- <div>
+      <div>
         <ul flex="~ col" gap="2">
           <li
-            v-for="i in 10" :key="i"
+            v-for="literature in associatedLiteratures" :key="literature.literature.title"
             border="~ base" p="2" rounded bg="hover:active"
             text="sm"
             op="75 hover:100"
@@ -151,21 +199,23 @@ async function onSubmitImage(file: File) {
           >
             <NuxtLink to="/" flex="~" justify="start" gap="4">
               <div flex="~" gap="2">
-                新编甲骨文字形总表 <div>[专著]</div> <div>(ISBN：9789629960476)</div>
+                {{ literature.literature.title }}  <div v-if="literature.literature.isbn">
+                  (ISBN：{{ literature.literature.isbn }})
+                </div>
+              </div>
+              <div v-if="literature.literature.author">
+                作者：{{ literature.literature.author }}
+              </div>
+              <div v-if="literature.literature.publishingHouse">
+                出版社：{{ literature.literature.publishingHouse }}
               </div>
               <div>
-                作者：沈建华，曹锦炎
-              </div>
-              <div>
-                出版社：香港中文大学出版社
-              </div>
-              <div>
-                第 88 页
+                第 {{ literature.page }} 页
               </div>
             </NuxtLink>
           </li>
         </ul>
-      </div> -->
+      </div>
     </section>
   </div>
 </template>

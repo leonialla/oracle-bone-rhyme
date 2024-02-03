@@ -6,7 +6,7 @@ const { options } = defineProps<{
   options: DropdownMenuOption[]
 }>()
 
-const selectedOption = ref(options[0])
+const selectedOption = defineModel<DropdownMenuOption>()
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const selectedOption = ref(options[0])
   >
     <button flex="~" justify="center" items="center" w="20" px="2">
       <slot name="default" :selected-option="selectedOption">
-        <span>{{ selectedOption.label }}</span>
+        <span>{{ selectedOption?.label }}</span>
       </slot>
     </button>
     <template #popper>
