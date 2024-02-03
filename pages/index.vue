@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Fuse from 'fuse.js'
+
 interface AssociatedLiterature {
   literature: Literature
   page: number
@@ -7,49 +9,28 @@ interface AssociatedLiterature {
 const inputImage = ref<File | null>()
 const recognition = ref<RecognitionResult>()
 const searchKeyword = ref<string>()
-const associatedLiteratures = ref<Array<AssociatedLiterature>>([])
-const fetchedLiteratures = ref<Array<AssociatedLiterature>>([])
+const associatedLiteratures = ref<AssociatedLiterature[]>([])
+const fetchedLiteratures = ref<AssociatedLiterature[]>([])
 const loading = ref<boolean>(false)
 
-const searchOptions = ref<DropdownMenuOption[]>([
-  {
-    name: 'title',
-    label: '文献名称',
-  },
-  {
-    name: 'author',
-    label: '作者',
-  },
-  {
-    name: 'organization',
-    label: '所属组织',
-  },
-  {
-    name: 'publishingHouse',
-    label: '出版社',
-  },
+const searchOptions = ref([
+  { name: 'title', label: '文献名称' },
+  { name: 'author', label: '作者' },
+  { name: 'organization', label: '所属组织' },
+  { name: 'publishingHouse', label: '出版社' },
 ])
 
-const selectedOption = ref<DropdownMenuOption>(searchOptions.value[0])
+const selectedOption = ref(searchOptions.value[0])
 
 async function fetchAssociatedLiteratures() {
   if (!recognition.value?.classId)
     return
 
-  const associations = await $fetch('/api/literatures', {
-    query: {
-      classId: recognition.value.classId,
-    },
-  })
+  const associations = await $fetch('/api/literatures', { query: { classId: recognition.value.classId } })
 
-  for (const association of associations) {
-    for (const page of association.pages) {
-      associatedLiteratures.value.push({
-        literature: association.literature,
-        page,
-      })
-    }
-  }
+  associatedLiteratures.value = associations.flatMap(association =>
+    association.pages.map(page => ({ literature: association.literature, page })),
+  )
 
   fetchedLiteratures.value = associatedLiteratures.value
 }
@@ -62,24 +43,24 @@ async function onSubmitImage(file: File) {
   formData.append('image', file)
 
   loading.value = true
-  recognition.value = await $fetch('/api/recognition', {
-    method: 'POST',
-    body: formData,
-  })
+  recognition.value = await $fetch('/api/recognition', { method: 'POST', body: formData })
   loading.value = false
 
   await fetchAssociatedLiteratures()
 }
 
 async function search() {
-  const creteria = {
-    type: selectedOption.value.name,
-    keyword: searchKeyword.value,
-  } as LiteratureQueryCreteria
+  const { name } = selectedOption.value
+  const keyword = searchKeyword.value
 
-  associatedLiteratures.value = fetchedLiteratures.value.filter((literature) => {
-    return literature.literature[creteria.type]?.includes(creteria.keyword)
-  })
+  if (!keyword) {
+    associatedLiteratures.value = fetchedLiteratures.value
+  }
+  else {
+    associatedLiteratures.value = new Fuse(fetchedLiteratures.value, { keys: [`literature.${name}`] })
+      .search(keyword)
+      .map(({ item }) => item)
+  }
 }
 
 function reset() {
