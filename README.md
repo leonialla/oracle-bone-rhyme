@@ -1,6 +1,6 @@
 # Oracle Bone Rhyme
 
-A web application for detecing and recognizing oracle bone scripts.
+A web application for detecing and recognizing oracle bone scripts anywhere.
 
 ## Setup
 
