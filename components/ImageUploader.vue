@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   (event: 'error', code: number, message: string): void
+  (event: 'pick', file: File): void
 }>()
 
 const file = defineModel<FileWithHandle | null>()
@@ -60,6 +61,7 @@ watch(file, (image, _, onCleanup) => {
     if (expired)
       return
     previewImage.value = evt.target?.result as string
+    emit('pick', image)
   }
 })
 </script>

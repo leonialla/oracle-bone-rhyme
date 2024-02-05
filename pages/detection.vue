@@ -24,7 +24,7 @@ function initCanvas(canvas: HTMLCanvasElement, width = 400, height = 400, _dpi?:
   return { ctx, dpi }
 }
 
-async function onSubmitImage(file: File) {
+async function pickImage(file: File) {
   loading.value = true
   const reader = new FileReader()
   reader.addEventListener('load', () => {
@@ -43,11 +43,8 @@ async function onSubmitImage(file: File) {
         body: formData,
       })
 
-      // eslint-disable-next-line no-console
-      console.log(detections)
-
       ctx.strokeStyle = 'green'
-      ctx.lineWidth = 2
+      ctx.lineWidth = 3
 
       for (const { bbox } of detections) {
         const [x1, y1, x2, y2] = bbox
@@ -80,19 +77,26 @@ async function onSubmitImage(file: File) {
     <section flex="~ col" gap="4" border="~ base" rounded p="4">
       <div flex="~" justify="center" items="center" gap="4">
         <div>
-          <ImageUploader v-model="imageInput" w="100" h="100" />
-          <ImageCropper v-model="imageInput" :stencil-aspect-ratio="9 / 16" @submit="onSubmitImage" />
+          <ImageUploader v-model="imageInput" w="100" h="100" @pick="pickImage" />
         </div>
         <div
           border="~ lighter" rounded
-          flex="~ col" justify="center"
+          flex="~" justify="center" items="center"
           w="100" h="100" overflow="hidden"
         >
           <div v-if="loading" flex="~ col" items="center" gap="2">
             <div i="svg-spinners-180-ring" text="2xl" />
             <div>检测中</div>
           </div>
-          <img v-if="resultSrc" :src="resultSrc" w="full">
+          <div v-else>
+            <div v-if="resultSrc">
+              <img :src="resultSrc" w="full">
+            </div>
+            <div v-else flex="~ col" items="center" gap="2">
+              <div i="carbon-image-search" text="2xl" />
+              <div>结果预览</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
