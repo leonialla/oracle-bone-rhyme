@@ -6,7 +6,7 @@
     <div px="30" py="4">
       <TheNav />
       <div py="2" flex="auto">
-        <slot />
+        <NuxtPage :keepalive="true" />
       </div>
     </div>
   </div>
