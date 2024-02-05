@@ -3,8 +3,8 @@ import { InferenceSession, Tensor } from 'onnxruntime-node'
 import sharp from 'sharp'
 import { nonMaximumSuppression, normalize, softmax } from '../utils'
 
-import literatureClassnames from './literature-classnames.json'
-import rubbingClassnames from './rubbing-classnames.json'
+import literatureClassnames from './assets/literature-classnames.json'
+import rubbingClassnames from './assets/rubbing-classnames.json'
 
 const literatureDetector = await InferenceSession.create('public/models/detection-literature.onnx')
 const literatureClassifier = await InferenceSession.create('public/models/recognition-literature.onnx')

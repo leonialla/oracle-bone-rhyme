@@ -2,8 +2,8 @@
 import { InferenceSession, Tensor } from 'onnxruntime-node'
 import sharp from 'sharp'
 import { normalize, softmax } from '../utils'
-import classnames from './literature-classnames.json'
-import glyphs from './glyphs.json'
+import classnames from './assets/literature-classnames.json'
+import glyphs from './assets/glyphs.json'
 
 const session = await InferenceSession.create('public/models/recognition-literature.onnx')
 
