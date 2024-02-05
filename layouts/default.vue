@@ -2,10 +2,13 @@
   <ClientOnly>
     <Plum />
   </ClientOnly>
-  <div v-if="!isMobileDevice" px="30" py="4">
-    <TheNav />
-    <div py="2" />
-    <slot />
+  <div v-if="!isMobileDevice" h="screen" flex="~ col">
+    <div px="30" py="4">
+      <TheNav />
+      <div py="2" flex="auto">
+        <slot />
+      </div>
+    </div>
   </div>
   <div v-else h="screen" flex="~" justify="center" items="center">
     <div>
