@@ -114,7 +114,7 @@ function reset() {
         >
           <div i-carbon-checkmark-outline text="2xl" />
           <div text="sm">
-            类别：{{ recognition.classId }}，置信概率：{{ recognition.confidence ? (recognition.confidence! * 100).toFixed(2) : '' }}，《新编甲骨文字形总表》编码：{{ recognition.code }}
+            类别编码：{{ recognition.classId }}，置信概率：{{ recognition.confidence ? (recognition.confidence! * 100).toFixed(2) : '' }}，《新编甲骨文字形总表》编码：{{ recognition.code }}
           </div>
         </div>
         <div
