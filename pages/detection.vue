@@ -52,7 +52,9 @@ async function pickImage(file: File) {
       }
 
       loading.value = false
-      resultSrc.value = canvas.toDataURL()
+      canvas.toBlob((blob) => {
+        resultSrc.value = URL.createObjectURL(blob!)
+      })
     })
   })
   reader.readAsDataURL(file)
@@ -89,9 +91,9 @@ async function pickImage(file: File) {
             <div>检测中</div>
           </div>
           <div v-else>
-            <div v-if="resultSrc">
+            <a v-if="resultSrc" :href="resultSrc" target="_blank">
               <img :src="resultSrc" w="full">
-            </div>
+            </a>
             <div v-else flex="~ col" items="center" gap="2">
               <div i="carbon-image-search-alt" text="2xl" />
               <div>结果预览</div>
