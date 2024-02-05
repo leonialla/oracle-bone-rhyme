@@ -27,4 +27,5 @@ logs
 *.onnx
 
 prisma/seed.ts
+prisma/client
 literatures

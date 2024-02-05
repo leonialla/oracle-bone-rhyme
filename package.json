@@ -35,6 +35,7 @@
     "focus-trap": "^7.5.4",
     "nuxt": "^3.10.1",
     "postcss": "^8.4.33",
+    "prisma": "5.9.1",
     "taze": "^0.13.2",
     "vue": "^3.4.15",
     "vue-advanced-cropper": "^2.8.8",
