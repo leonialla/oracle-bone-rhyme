@@ -93,7 +93,7 @@ async function pickImage(file: File) {
               <img :src="resultSrc" w="full">
             </div>
             <div v-else flex="~ col" items="center" gap="2">
-              <div i="carbon-image-search" text="2xl" />
+              <div i="carbon-image-search-alt" text="2xl" />
               <div>结果预览</div>
             </div>
           </div>
