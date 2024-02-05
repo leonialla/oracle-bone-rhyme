@@ -1,3 +1,22 @@
+<script setup lang="ts">
+definePageMeta({
+  middleware: [
+    (to) => {
+      if (!to.query.name || !to.query.page)
+        return '/'
+    },
+  ],
+})
+
+const name = ref<string>()
+const page = ref<number>()
+
+const route = useRoute()
+
+name.value = route.query.name as string
+page.value = Number.parseInt(route.query.page as string)
+</script>
+
 <template>
   <header flex="~" justify="center" items="center" gap="5">
     <div flex="~" items="center" gap="2" text="md">
@@ -18,6 +37,6 @@
     </div>
   </header>
   <main pt="10" flex="~" justify="center">
-    <img src="/foo.png" border="~ base">
+    <img :src="`/literatures/${name}/${page}.png`" border="~ base">
   </main>
 </template>

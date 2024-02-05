@@ -2,7 +2,9 @@
 import { InferenceSession, Tensor } from 'onnxruntime-node'
 import sharp from 'sharp'
 import { nonMaximumSuppression, normalize, softmax } from '../utils'
-import classnames from './literature-classnames.json'
+
+import literatureClassnames from './literature-classnames.json'
+import rubbingClassnames from './rubbing-classnames.json'
 
 const literatureDetector = await InferenceSession.create('public/models/detection-literature.onnx')
 const literatureClassifier = await InferenceSession.create('public/models/recognition-literature.onnx')
@@ -15,6 +17,8 @@ export default defineEventHandler(async (event) => {
     return
 
   const type = String(formData[0].data)
+
+  const classnames = type === 'literature' ? literatureClassnames : rubbingClassnames
 
   const detector = type === 'literature' ? literatureDetector : rubbingDetector
   const classifier = type === 'literature' ? literatureClassifier : rubbingClassifier

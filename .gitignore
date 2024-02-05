@@ -27,3 +27,4 @@ logs
 *.onnx
 
 prisma/seed.ts
+literatures

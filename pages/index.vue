@@ -184,7 +184,7 @@ function reset() {
             op="75 hover:100"
             transition
           >
-            <NuxtLink to="/" flex="~" justify="start" gap="4">
+            <NuxtLink :to="`/preview?name=${literature.title}&page=${page - 1}`" flex="~" justify="start" gap="4">
               <div flex="~" gap="2">
                 {{ literature.title }}
                 <div v-if="literature.isbn">
