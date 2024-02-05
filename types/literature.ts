@@ -1,5 +1,6 @@
 export interface Literature {
   title: string
+  totalPages: number
   author: string | null
   isbn: string | null
   organization: string | null

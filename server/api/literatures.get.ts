@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
         organization: true,
         publishingHouse: true,
         description: true,
+        totalPages: true,
       },
     }) as Literature
 

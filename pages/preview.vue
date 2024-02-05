@@ -34,6 +34,9 @@ page.value = Number.parseInt(route.query.page as string)
       <button border="~ lighter" rounded px="2" py="1">
         跳转
       </button>
+      <NuxtLink to="/" border="~ lighter" rounded px="2" py="1">
+        返回首页
+      </NuxtLink>
     </div>
   </header>
   <main pt="10" flex="~" justify="center">

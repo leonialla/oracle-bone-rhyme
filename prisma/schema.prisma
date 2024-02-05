@@ -18,6 +18,7 @@ model Literature {
   organization     String?
   publishingHouse  String?
   description      String?
+  totalPages       Int?
   createdAt        DateTime               @default(now())
   updatedAt        DateTime               @updatedAt
   pageAssociations GlyphPageAssociation[]
