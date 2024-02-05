@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { useStorage } from '@vueuse/core'
+
 export type ImageType = 'literature' | 'rubbing'
 
 const imageInput = ref<File | null>()
-const imageType = ref<ImageType>('literature')
+const imageType = useStorage<ImageType>('detectionType', 'literature')
 const resultSrc = ref<string>()
 const loading = ref<boolean>(false)
 
@@ -44,12 +46,20 @@ async function pickImage(file: File) {
         body: formData,
       })
 
-      ctx.strokeStyle = 'green'
+      ctx.strokeStyle = 'rgb(68, 189, 50)'
       ctx.lineWidth = 3
 
-      for (const { bbox } of detections) {
+      ctx.font = '16px sans-serif'
+
+      for (const { bbox, classId } of detections) {
         const [x1, y1, x2, y2] = bbox
         ctx.strokeRect(x1, y1, x2 - x1, y2 - y1)
+
+        ctx.fillStyle = 'rgb(68, 189, 50)'
+        ctx.fillRect(x1, y1 - Number.parseInt(ctx.font), ctx.measureText(classId).width, Number.parseInt(ctx.font))
+
+        ctx.fillStyle = 'white'
+        ctx.fillText(classId, x1, y1 - 2)
       }
 
       loading.value = false
@@ -80,12 +90,12 @@ async function pickImage(file: File) {
     <section flex="~ col" gap="4" border="~ base" rounded p="4">
       <div flex="~" justify="center" items="center" gap="4">
         <div>
-          <ImageUploader v-model="imageInput" w="100" h="100" @pick="pickImage" />
+          <ImageUploader v-model="imageInput" w="90" h="90" @pick="pickImage" />
         </div>
         <div
           border="~ lighter" rounded
           flex="~" justify="center" items="center"
-          w="100" h="100" overflow="hidden"
+          w="90" h="90" overflow="hidden"
         >
           <div v-if="loading" flex="~ col" items="center" gap="2">
             <div i="svg-spinners-180-ring" text="2xl" />
@@ -93,7 +103,7 @@ async function pickImage(file: File) {
           </div>
           <div v-else>
             <a v-if="resultSrc" :href="resultSrc" target="_blank">
-              <img :src="resultSrc" w="full">
+              <img :src="resultSrc">
             </a>
             <div v-else flex="~ col" items="center" gap="2">
               <div i="carbon-image-search-alt" text="2xl" />
@@ -109,24 +119,26 @@ async function pickImage(file: File) {
     <h1 op="45">
       请选择图像类型：
     </h1>
-    <div flex="~" justify="center" items="center" gap="4">
-      <button
-        px="4" py="1"
-        border="~ base" rounded bg="hover:active"
-        :class="{ 'bg-base': imageType === 'literature' }"
-        @click="imageType = 'literature'"
-      >
-        文献
-      </button>
-      <button
-        px="4" py="1"
-        border="~ base" rounded
-        :class="{ 'bg-base': imageType === 'rubbing' }"
-        @click="imageType = 'rubbing'"
-      >
-        拓片
-      </button>
-    </div>
+    <ClientOnly>
+      <div flex="~" justify="center" items="center" gap="4">
+        <button
+          px="4" py="1"
+          border="~ base" rounded bg="hover:active"
+          :class="{ 'bg-base': imageType === 'literature' }"
+          @click="imageType = 'literature'"
+        >
+          文献
+        </button>
+        <button
+          px="4" py="1"
+          border="~ base" rounded
+          :class="{ 'bg-base': imageType === 'rubbing' }"
+          @click="imageType = 'rubbing'"
+        >
+          拓片
+        </button>
+      </div>
+    </ClientOnly>
   </div>
 
   <div
