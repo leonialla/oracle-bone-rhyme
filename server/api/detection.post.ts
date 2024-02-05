@@ -18,10 +18,9 @@ export default defineEventHandler(async (event) => {
 
   const type = String(formData[0].data)
 
-  const classnames = type === 'literature' ? literatureClassnames : rubbingClassnames
-
   const detector = type === 'literature' ? literatureDetector : rubbingDetector
   const classifier = type === 'literature' ? literatureClassifier : rubbingClassifier
+  const classnames = type === 'literature' ? literatureClassnames : rubbingClassnames
 
   const detections: DetectionResult[] = []
 
