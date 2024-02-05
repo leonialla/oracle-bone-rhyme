@@ -4,17 +4,24 @@ import sharp from 'sharp'
 import { nonMaximumSuppression, normalize, softmax } from '../utils'
 import classnames from './literature-classnames.json'
 
-const detector = await InferenceSession.create('public/models/detection-literature.onnx')
-const classifier = await InferenceSession.create('public/models/recognition-literature.onnx')
+const literatureDetector = await InferenceSession.create('public/models/detection-literature.onnx')
+const literatureClassifier = await InferenceSession.create('public/models/recognition-literature.onnx')
+const rubbingDetector = await InferenceSession.create('public/models/detection-rubbing.onnx')
+const rubbingClassifier = await InferenceSession.create('public/models/recognition-rubbing.onnx')
 
 export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)
   if (!formData)
     return
 
+  const type = String(formData[0].data)
+
+  const detector = type === 'literature' ? literatureDetector : rubbingDetector
+  const classifier = type === 'literature' ? literatureClassifier : rubbingClassifier
+
   const detections: DetectionResult[] = []
 
-  const image = sharp(formData[0].data).removeAlpha()
+  const image = sharp(formData[1].data).removeAlpha()
   const imageOriginal = sharp(await image.toBuffer())
 
   const { width, height } = await image.metadata()

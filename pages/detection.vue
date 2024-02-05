@@ -2,11 +2,11 @@
 export type ImageType = 'literature' | 'rubbing'
 
 const imageInput = ref<File | null>()
-const imageType = ref<ImageType>()
+const imageType = ref<ImageType>('literature')
 const resultSrc = ref<string>()
 const loading = ref<boolean>(false)
 
-function initCanvas(canvas: HTMLCanvasElement, width = 400, height = 400, _dpi?: number) {
+function initCanvas(canvas: HTMLCanvasElement, width: number, height: number, _dpi?: number) {
   const ctx = canvas.getContext('2d')!
 
   const dpr = window.devicePixelRatio || 1
@@ -36,7 +36,8 @@ async function pickImage(file: File) {
       ctx.drawImage(image, 0, 0, image.width, image.height)
 
       const formData = new FormData()
-      formData.append('image', file)
+      formData.append('type', imageType.value!)
+      formData.append('payload', file)
 
       const detections = await $fetch('/api/detection', {
         method: 'POST',
