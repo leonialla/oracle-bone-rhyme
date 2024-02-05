@@ -1,15 +1,12 @@
-// @ts-expect-error esm export
-import { InferenceSession, Tensor } from 'onnxruntime-node'
+// @ts-expect-error ESM export
+import { Tensor } from 'onnxruntime-node'
+
 import sharp from 'sharp'
 import { nonMaximumSuppression, normalize, softmax } from '../utils'
 
 import literatureClassnames from './assets/literature-classnames.json'
 import rubbingClassnames from './assets/rubbing-classnames.json'
-
-const literatureDetector = await InferenceSession.create('public/models/detection-literature.onnx')
-const literatureClassifier = await InferenceSession.create('public/models/recognition-literature.onnx')
-const rubbingDetector = await InferenceSession.create('public/models/detection-rubbing.onnx')
-const rubbingClassifier = await InferenceSession.create('public/models/recognition-rubbing.onnx')
+import { literatureClassifier, literatureDetector, rubbingClassifier, rubbingDetector } from './models'
 
 export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)

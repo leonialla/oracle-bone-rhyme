@@ -1,11 +1,10 @@
-// @ts-expect-error esm export
-import { InferenceSession, Tensor } from 'onnxruntime-node'
+// @ts-expect-error ESM export
+import { Inferenceclassifier, Tensor } from 'onnxruntime-node'
 import sharp from 'sharp'
 import { normalize, softmax } from '../utils'
 import classnames from './assets/literature-classnames.json'
 import glyphs from './assets/glyphs.json'
-
-const session = await InferenceSession.create('public/models/recognition-literature.onnx')
+import { literatureClassifier as classifier } from './models'
 
 export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)
@@ -30,7 +29,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const input = new Tensor('float32', [...red, ...green, ...blue], [1, 3, 224, 224])
-    const output = Array.from((await session.run({ input })).output.data) as number[]
+    const output = Array.from((await classifier.run({ input })).output.data) as number[]
     const probabilities = softmax(output)
 
     const confidence = Math.max(...probabilities)
