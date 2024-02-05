@@ -43,6 +43,9 @@ async function onSubmitImage(file: File) {
         body: formData,
       })
 
+      // eslint-disable-next-line no-console
+      console.log(detections)
+
       ctx.strokeStyle = 'green'
       ctx.lineWidth = 2
 

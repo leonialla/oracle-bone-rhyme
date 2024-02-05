@@ -10,7 +10,7 @@ export function softmax(input: number[]) {
   return exps.map(exp => exp / expSum)
 }
 
-export function iou(bbox1: BoundingBox, bbox2: BoundingBox): number {
+export function calculateIoU(bbox1: BoundingBox, bbox2: BoundingBox) {
   const x1 = Math.max(bbox1[0], bbox2[0])
   const y1 = Math.max(bbox1[1], bbox2[1])
   const x2 = Math.min(bbox1[2], bbox2[2])
@@ -42,7 +42,14 @@ export function nonMaximumSuppression(
   const kept: number[] = []
 
   for (const i of indices) {
-    if (kept.every(j => iou(boxes[i], boxes[j]) + EPSILON <= threshold))
+    let shouldKeep = true
+    for (const j of kept) {
+      if (calculateIoU(boxes[i], boxes[j]) + EPSILON > threshold) {
+        shouldKeep = false
+        break
+      }
+    }
+    if (shouldKeep)
       kept.push(i)
   }
 

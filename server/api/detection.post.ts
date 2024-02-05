@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
   const mean = [0.485, 0.456, 0.406]
   const std = [0.229, 0.224, 0.225]
 
-  for (const bbox of nonMaximumSuppression(boxes, scores, 0.9)) {
+  for (const bbox of nonMaximumSuppression(boxes, scores, 0.1)) {
     const [x1, y1, x2, y2] = bbox
 
     const crop = await sharp(await imageOriginal.toBuffer())
