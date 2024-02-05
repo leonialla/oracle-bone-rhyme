@@ -1,20 +1,9 @@
 // @ts-expect-error esm export
 import { InferenceSession, Tensor } from 'onnxruntime-node'
 import sharp from 'sharp'
+import { normalize, softmax } from '../utils'
 import classnames from './literature-classnames.json'
 import glyphs from './glyphs.json'
-
-function normalize(input: number, mean: number, std: number) {
-  return (input - mean) / std
-}
-
-function softmax(input: number[]) {
-  const max = Math.max(...input)
-  const exps = input.map(value => Math.exp(value - max))
-  const expSum = exps.reduce((accumulate, current) => accumulate + current, 0)
-
-  return exps.map(exp => exp / expSum)
-}
 
 const session = await InferenceSession.create('public/models/recognition-literature.onnx')
 
