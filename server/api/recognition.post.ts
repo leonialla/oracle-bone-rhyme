@@ -1,5 +1,5 @@
 // @ts-expect-error ESM export
-import { Inferenceclassifier, Tensor } from 'onnxruntime-node'
+import { Tensor } from 'onnxruntime-node'
 import sharp from 'sharp'
 import { normalize, softmax } from '../utils'
 import classnames from './assets/literature-classnames.json'
