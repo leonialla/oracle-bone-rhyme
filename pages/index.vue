@@ -176,7 +176,7 @@ function reset() {
         </div>
       </div>
       <div>
-        <ul flex="~ col" gap="2">
+        <ul v-if="recognition?.confidence! > 0.4" flex="~ col" gap="2">
           <li
             v-for="{ literature, page } in associatedLiteratures" :key="literature.title"
             border="~ base" p="2" rounded bg="hover:active"

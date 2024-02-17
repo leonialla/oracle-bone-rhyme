@@ -16,9 +16,11 @@ const destination = ref<number>()
 const route = useRoute()
 const router = useRouter()
 
-name.value = route.query.name as string
-page.value = Number.parseInt(route.query.page as string)
-total.value = Number.parseInt(route.query.total as string)
+watchEffect(() => {
+  name.value = route.query.name as string
+  page.value = Number.parseInt(route.query.page as string)
+  total.value = Number.parseInt(route.query.total as string)
+})
 
 function turnToPage() {
   if (!destination.value || destination.value! < 1 || destination.value! > total.value!) {
