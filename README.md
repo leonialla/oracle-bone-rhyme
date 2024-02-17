@@ -20,6 +20,21 @@ yarn install
 bun install
 ```
 
+Configure your MySQL database connectivity URL in the `.env` file(You might copy the `.env.example` file and rename it to `.env`)
+
+Then you can run the following command to synchronize the schema migrates to the database:
+
+```bash
+npm run migrate
+```
+
+Put following ONNX format models into the `public/models` directory:
+
+- `recognition-literature.onnx`
+- `recognition-rubbing.onnx`
+- `detection-literature.onnx`
+- `detection-rubbing.onnx`
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
