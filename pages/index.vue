@@ -26,11 +26,10 @@ async function fetchAssociatedLiteratures() {
   if (!recognition.value?.classId)
     return
 
-  const associations = await $fetch('/api/literatures', { query: { classId: recognition.value.classId } })
-
-  associatedLiteratures.value = associations.flatMap(
-    association => association.pages.map(page => ({ literature: association.literature, page })),
-  )
+  associatedLiteratures.value = (await $fetch('/api/literatures', { query: { classId: recognition.value.classId } }))
+    .flatMap(
+      association => association.pages.map(page => ({ literature: association.literature, page })),
+    )
 
   fetchedLiteratures.value = associatedLiteratures.value
 }
