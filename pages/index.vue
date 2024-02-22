@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Fuse from 'fuse.js'
 
-interface AssociatedLiterature {
+interface Association {
   literature: Literature
   page: number
 }
@@ -9,8 +9,8 @@ interface AssociatedLiterature {
 const inputImage = ref<File | null>()
 const recognition = ref<RecognitionResult>()
 const searchKeyword = ref<string>()
-const associatedLiteratures = ref<AssociatedLiterature[]>([])
-const fetchedLiteratures = ref<AssociatedLiterature[]>([])
+const associations = ref<Association[]>([])
+const associationsFetched = ref<Association[]>([])
 const loading = ref<boolean>(false)
 
 const searchOptions = ref([
@@ -26,17 +26,17 @@ async function fetchAssociatedLiteratures() {
   if (!recognition.value?.classId)
     return
 
-  associatedLiteratures.value = (await $fetch('/api/literatures', { query: { classId: recognition.value.classId } }))
+  associations.value = (await $fetch('/api/literatures', { query: { classId: recognition.value.classId } }))
     .flatMap(
       association => association.pages.map(page => ({ literature: association.literature, page })),
     )
 
-  fetchedLiteratures.value = associatedLiteratures.value
+  associationsFetched.value = associations.value
 }
 
 async function onSubmitImage(file: File) {
   recognition.value = undefined
-  associatedLiteratures.value = []
+  associations.value = []
 
   const formData = new FormData()
   formData.append('image', file)
@@ -53,17 +53,17 @@ async function search() {
   const keyword = searchKeyword.value
 
   if (!keyword) {
-    associatedLiteratures.value = fetchedLiteratures.value
+    associations.value = associationsFetched.value
   }
   else {
-    associatedLiteratures.value = new Fuse(fetchedLiteratures.value, { keys: [`literature.${name}`] })
+    associations.value = new Fuse(associationsFetched.value, { keys: [`literature.${name}`] })
       .search(keyword)
       .map(({ item }) => item)
   }
 }
 
 function reset() {
-  associatedLiteratures.value = fetchedLiteratures.value
+  associations.value = associationsFetched.value
   searchKeyword.value = ''
 }
 </script>
@@ -177,7 +177,7 @@ function reset() {
       <div>
         <ul v-if="recognition?.confidence! > 0.4" flex="~ col" gap="2">
           <li
-            v-for="{ literature, page } in associatedLiteratures" :key="literature.title"
+            v-for="{ literature, page } in associations" :key="literature.title"
             border="~ base" p="2" rounded bg="hover:active"
             text="sm"
             op="75 hover:100"
