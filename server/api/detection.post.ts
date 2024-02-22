@@ -1,12 +1,43 @@
+import type { Buffer } from 'node:buffer'
+
 // @ts-expect-error ESM export
 import { Tensor } from 'onnxruntime-node'
 
 import sharp from 'sharp'
+
 import { nonMaximumSuppression, normalize, softmax } from '../utils'
 
 import literatureClassnames from './assets/literature-classnames.json'
 import rubbingClassnames from './assets/rubbing-classnames.json'
 import { literatureClassifier, literatureDetector, rubbingClassifier, rubbingDetector } from './models'
+
+function permute(
+  pixels: Buffer,
+  normalizationOptions?: { mean: number[], std: number[] },
+) {
+  const red = []
+  const green = []
+  const blue = []
+
+  if (normalizationOptions) {
+    const { mean, std } = normalizationOptions
+
+    for (let i = 0; i < pixels.length; i += 3) {
+      red.push(normalize(pixels[i] / 255, mean[0], std[0]))
+      green.push(normalize((pixels[i] + 1) / 255, mean[1], std[1]))
+      blue.push(normalize((pixels[i] + 2) / 255, mean[2], std[2]))
+    }
+  }
+  else {
+    for (let i = 0; i < pixels.length; i += 3) {
+      red.push(pixels[i] / 255)
+      green.push(pixels[i + 1] / 255)
+      blue.push(pixels[i + 2] / 255)
+    }
+  }
+
+  return [red, green, blue]
+}
 
 export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)
@@ -34,15 +65,7 @@ export default defineEventHandler(async (event) => {
     .raw()
     .toBuffer()
 
-  const red = []
-  const green = []
-  const blue = []
-
-  for (let i = 0; i < pixels.length; i += 3) {
-    red.push(pixels[i] / 255)
-    green.push(pixels[i + 1] / 255)
-    blue.push(pixels[i + 2] / 255)
-  }
+  const [red, green, blue] = permute(pixels)
 
   const input = new Tensor(
     'float32',
@@ -80,21 +103,13 @@ export default defineEventHandler(async (event) => {
   for (const bbox of nonMaximumSuppression(boxes, scores, 0.1)) {
     const [x1, y1, x2, y2] = bbox
 
-    const crop = await sharp(await imageOriginal.toBuffer())
+    const region = await sharp(await imageOriginal.toBuffer())
       .extract({ top: y1, left: x1, width: (x2 - x1), height: (y2 - y1) })
       .resize({ width: 224, height: 224 })
       .raw()
       .toBuffer()
 
-    const red = []
-    const green = []
-    const blue = []
-
-    for (let i = 0; i < crop.length; i += 3) {
-      red.push(normalize(crop[i] / 255, mean[0], std[0]))
-      green.push(normalize(crop[i + 1] / 255, mean[1], std[1]))
-      blue.push(normalize(crop[i + 2] / 255, mean[2], std[2]))
-    }
+    const [red, green, blue] = permute(region, { mean, std })
 
     const input = new Tensor('float32', [...red, ...green, ...blue], [1, 3, 224, 224])
     const output = Array.from((await classifier.run({ input })).output.data) as number[]
