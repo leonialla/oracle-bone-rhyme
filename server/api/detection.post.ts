@@ -5,7 +5,7 @@ import { Tensor } from 'onnxruntime-node'
 
 import sharp from 'sharp'
 
-import { nonMaximumSuppression, normalize, softmax } from '../utils'
+import { nonMaximumSuppression, normalize } from '../utils'
 
 import literatureClassnames from './assets/literature-classnames.json'
 import rubbingClassnames from './assets/rubbing-classnames.json'
@@ -113,10 +113,8 @@ export default defineEventHandler(async (event) => {
 
     const input = new Tensor('float32', [...red, ...green, ...blue], [1, 3, 224, 224])
     const output = Array.from((await classifier.run({ input })).output.data) as number[]
-    const probabilities = softmax(output)
 
-    const confidence = Math.max(...probabilities)
-    const classId = classnames[probabilities.indexOf(confidence)]
+    const classId = classnames[output.indexOf(Math.max(...output))]
 
     detections.push({
       bbox: [x1, y1, x2, y2],
