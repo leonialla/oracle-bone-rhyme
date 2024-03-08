@@ -1,5 +1,5 @@
 // @ts-expect-error esm export
-import { InferenceSession, Tensor } from 'onnxruntime-node'
+import { InferenceSession } from 'onnxruntime-node'
 
 export const literatureDetector = await InferenceSession.create('public/models/detection-literature.onnx')
 export const literatureClassifier = await InferenceSession.create('public/models/recognition-literature.onnx')

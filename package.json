@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "esint .",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "up": "taze major -I",
     "migrate": "prisma migrate dev"
