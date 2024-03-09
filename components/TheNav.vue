@@ -26,6 +26,14 @@
             </div>
           </NuxtLink>
         </button>
+        <button border="~ base" bg="hover:active" rounded text="sm" px="2" py="1">
+          <NuxtLink to="/search" flex="~" items="center" gap="2">
+            <div i="carbon-search-advanced" text="2xl" />
+            <div>
+              字形检索
+            </div>
+          </NuxtLink>
+        </button>
       </div>
       <ColorModeToggle />
     </div>
