@@ -20,26 +20,26 @@
     "sharp": "^0.33.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.6.4",
-    "@iconify-json/carbon": "^1.1.30",
+    "@antfu/eslint-config": "^2.8.0",
+    "@iconify-json/carbon": "^1.1.31",
     "@iconify-json/svg-spinners": "^1.1.2",
     "@nuxt/devtools": "latest",
     "@nuxtjs/color-mode": "^3.3.2",
     "@unocss/nuxt": "^0.58.5",
-    "@vueuse/integrations": "^10.8.0",
-    "@vueuse/nuxt": "^10.8.0",
+    "@vueuse/integrations": "^10.9.0",
+    "@vueuse/nuxt": "^10.9.0",
     "browser-fs-access": "^0.35.0",
     "eslint": "npm:eslint-ts-patch@8.57.0-0",
     "eslint-ts-patch": "8.57.0-0",
-    "esno": "^4.0.0",
+    "esno": "^4.7.0",
     "floating-vue": "2.0.0-beta.24",
     "focus-trap": "^7.5.4",
-    "nuxt": "^3.10.2",
+    "nuxt": "^3.10.3",
     "postcss": "^8.4.35",
     "prisma": "5.9.1",
     "taze": "^0.13.3",
-    "vue": "^3.4.19",
+    "vue": "^3.4.21",
     "vue-advanced-cropper": "^2.8.8",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.3.0"
   }
 }
